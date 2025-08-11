@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>FeelWell — All-in-One Modular</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7fbff;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --primary: #6366f1;
+}
+* {
+  box-sizing: border-box;
+  font-family: Inter, system-ui, Arial, sans-serif;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: #0f1724;
+}
+.wrap {
+  max-width: 1100px;
+  margin: 20px auto;
+  padding: 18px;
+}
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+h1 {
+  margin: 0;
+  font-size: 20px;
+}
+.panel {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 18px;
+  margin-top: 16px;
+}
+.card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 6px 20px rgba(2, 6, 23, 0.06);
+}
+.small {
+  font-size: 13px;
+  color: var(--muted);
+}
+.avatar-list {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.avatar {
+  width: 68px;
+  height: 68px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+  font-size: 28px;
+}
+.avatar.selected {
+  outline: 3px solid rgba(99, 102, 241, 0.14);
+  box-shadow: 0 6px 14px rgba(99, 102, 241, 0.06);
+}
+.color-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.color-swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+.color-swatch.selected {
+  outline: 3px solid rgba(0, 0, 0, 0.06);
+}
+.emotions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.emotion {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fafafa;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  border: 1px solid #eee;
+}
+.emotion.selected {
+  background: linear-gradient(90deg, #eef2ff, #fff7ed);
+  border-color: #e6e6ff;
+}
+.stage {
+  min-height: 360px;
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+}
+.character {
+  width: 160px;
+  height: 160px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64px;
+  transition: transform 0.4s ease;
+}
+.item {
+  font-size: 44px;
+  transition: transform 0.4s ease;
+}
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+button {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 0;
+  cursor: pointer;
+}
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+.btn-ghost {
+  background: #f3f4f6;
+}
+.notice {
+  margin-top: 12px;
+  color: #374151;
+  background: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px dashed #e6e6e6;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+.chart-wrap {
+  height: 220px;
+  padding: 8px;
+}
+.footer {
+  margin-top: 18px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+.badge {
+  display: inline-block;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: #f1f5ff;
+  color: #3730a3;
+  font-weight: 600;
+}
+.task-input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  margin-top: 8px;
+}
+@media (max-width: 980px) {
+  .panel {
+    grid-template-columns: 1fr;
+  }
+  .left {
+    order: 2;
+  }
+}
+/* --- Healthy AI Chatbox --- */
+#healthyAIWidget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  font-size: 14px;
+  z-index: 9999;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+#healthyAIHeader {
+  background: var(--primary);
+  color: white;
+  padding: 10px;
+  border-radius: 10px 10px 0 0;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#healthyAIBody {
+  background: white;
+  border: 1px solid #ccc;
+  border-top: none;
+  display: none;
+  flex-direction: column;
+  height: 380px;
+  border-radius: 0 0 10px 10px;
+  overflow: hidden;
+}
+
+#healthyAIChat {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.healthyAIMessage {
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.healthyAIMessage.user {
+  text-align: right;
+  color: #2563eb;
+}
+
+.healthyAIMessage.ai {
+  text-align: left;
+  color: #374151;
+}
+
+#healthyAIInputArea {
+  display: flex;
+  border-top: 1px solid #ddd;
+}
+
+#healthyAIInput {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  outline: none;
+}
+
+#healthyAISend {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0 14px;
+  cursor: pointer;
+}
+
+
+:root{--bg:#f0f4ff;--card:#fff;--primary:#6366f1;--muted:#6b7280}
+*{box-sizing:border-box;font-family:Inter,Arial,sans-serif}
+body{overflow-y:auto; margin:0;background:var(--bg);display:flex;align-items:center;justify-content:center;min-height:100vh}
+.login-wrap{width:420px;padding:12px}
+.card{background:var(--card);padding:20px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.08)}
+h1{text-align:center;color:var(--primary);margin:0 0 12px}
+.tabs{display:flex;gap:8px;justify-content:center;margin-bottom:12px}
+.tab{padding:8px 12px;border-radius:8px;background:#f3f4f6;border:0;cursor:pointer}
+.tab.active{background:var(--primary);color:#fff}
+.form{display:flex;flex-direction:column;gap:8px}
+.hidden{display:none}
+input,select{padding:10px;border-radius:8px;border:1px solid #e6e6f0}
+.row{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:8px}
+.primary{background:var(--primary);color:#fff;border:0;padding:10px 12px;border-radius:8px;cursor:pointer}
+.link{background:transparent;border:0;color:var(--primary);cursor:pointer;text-decoration:underline;padding:8px}
+.message{min-height:24px;color:#dc2626;font-size:14px}
+.message.success{color:#16a34a}
+
+</style>
+</head>
+<body>
+<!-- Login Page -->
+<div id="loginPage" style="display:none">
+
+<div class="login-wrap">
+  <div class="card">
+    <h1>FeelWell</h1>
+    <div class="tabs">
+      <button id="showLogin" class="tab active">Đăng nhập</button>
+      <button id="showRegister" class="tab">Đăng ký</button>
+    </div>
+
+    <div id="loginForm" class="form">
+      <label>Tên người dùng</label>
+      <input id="loginUsername" type="text" placeholder="Tên đăng nhập">
+      <label>Mật khẩu</label>
+      <input id="loginPassword" type="password" placeholder="Mật khẩu">
+      <div class="row">
+        <button id="loginBtn" class="primary">Đăng nhập</button>
+        <button id="forgotBtn" class="link">Quên mật khẩu?</button>
+      </div>
+      <div id="loginMessage" class="message"></div>
+    </div>
+
+    <div id="registerForm" class="form hidden">
+      <label>Username</label>
+      <input id="regUsername" type="text" placeholder="Tên đăng nhập">
+      <label>Email</label>
+      <input id="regEmail" type="email" placeholder="Email">
+      <label>Mật khẩu</label>
+      <input id="regPassword" type="password" placeholder="Mật khẩu">
+      <label>Nhập lại mật khẩu</label>
+      <input id="regConfirm" type="password" placeholder="Xác nhận mật khẩu">
+      <label>Câu hỏi bảo mật</label>
+      <select id="regQuestion">
+        <option value="">-- Chọn câu hỏi --</option>
+        <option value="pet">Tên thú cưng đầu tiên?</option>
+        <option value="school">Tên trường tiểu học?</option>
+        <option value="city">Tên thành phố nơi bạn sinh?</option>
+      </select>
+      <label>Trả lời</label>
+      <input id="regAnswer" type="text" placeholder="Câu trả lời bảo mật">
+      <div class="row">
+        <button id="registerBtn" class="primary">Đăng ký</button>
+        <button id="regToLogin" class="link">Đã có tài khoản?</button>
+      </div>
+      <div id="regMessage" class="message"></div>
+    </div>
+
+    <div id="forgotForm" class="form hidden">
+      <label>Username</label>
+      <input id="fpUsername" type="text" placeholder="Tên đăng nhập">
+      <div id="fpQuestionArea" class="hidden">
+        <label id="fpQuestionLabel">Câu hỏi</label>
+        <input id="fpAnswer" type="text" placeholder="Trả lời câu hỏi bảo mật">
+      </div>
+      <div class="row">
+        <button id="fpNext" class="primary">Tiếp theo</button>
+        <button id="fpCancel" class="link">Hủy</button>
+      </div>
+      <div id="fpMessage" class="message"></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="login.js"></script>
+
+</div>
+
+<!-- FeelWell Page -->
+<div id="feelwellPage" style="display:none">
+
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>FeelWell — Emotion Therapy (Science Fair Edition)</h1>
+        <div class="small">
+          Prototype: lịch sử, điểm, biểu đồ, xuất CSV, âm thanh & animation nhẹ.
+        </div>
+      </div>
+      <div>
+        <span class="small">Điểm: </span><strong id="scoreDisplay">0</strong>
+        <span style="margin-left:10px" class="badge" id="levelBadge">Novice</span>
+      </div>
+    </header>
+
+    <div class="panel">
+      <div class="left">
+        <div class="card">
+          <h3>1. Chọn nhân vật & phong cách</h3>
+          <div class="small">Avatar mẫu hoặc upload ảnh, chọn màu, đặt tên</div>
+          <div class="avatar-list" id="avatarList"></div>
+          <div class="color-row" id="colorRow"></div>
+          <label class="small" style="display:block;margin-top:8px;cursor:pointer" id="uploadLabel">Upload ảnh</label>
+          <input type="file" id="imgUpload" accept="image/*" style="display:none">
+          <div style="margin-top:10px">
+            <input id="charName" placeholder="Tên nhân vật (không bắt buộc)" class="task-input">
+          </div>
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button class="btn-primary" id="saveBtn">Lưu</button>
+            <button class="btn-ghost" id="resetBtn">Đặt lại</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h3>2. Chọn trạng thái cảm xúc</h3>
+          <div class="small">Chọn cảm xúc để nhận nhiệm vụ phù hợp</div>
+          <div class="emotions" id="emotions"></div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h3>3. Lịch sử & xuất dữ liệu</h3>
+          <div class="small">Lưu mọi lần hoàn thành (localStorage). Bạn có thể xuất CSV để nộp báo cáo.</div>
+          <div style="margin-top:8px;display:flex;gap:8px">
+            <button class="btn-primary" id="exportCsv">Xuất CSV</button>
+            <button class="btn-ghost" id="clearHistory">Xóa lịch sử</button>
+          </div>
+          <div id="historyList" style="margin-top:12px;max-height:160px;overflow:auto"></div>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="card stage" id="stage">
+          <div class="character" id="characterDisplay">🙂</div>
+          <div class="item" id="itemDisplay"></div>
+          <div id="taskArea" style="width:100%"></div>
+          <div id="controls" style="width:100%"></div>
+          <div id="feedback" class="notice" style="display:none"></div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h3>4. Thống kê</h3>
+          <div class="small">Biểu đồ tần suất cảm xúc (số lần hoàn thành)</div>
+          <div class="stats-grid">
+            <div class="card chart-wrap"><canvas id="emotionChart"></canvas></div>
+            <div class="card" style="padding:12px">
+              <h4>Tiến trình</h4>
+              <div class="small">Số lần mỗi cảm xúc được chọn & hoàn thành</div>
+              <div style="margin-top:12px" id="statCounts"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">Ghi chú: không thay thế trị liệu chuyên nghiệp. Dùng để minh họa dự án khoa học.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Healthy AI Chatbox -->
+  <div id="healthyAIWidget">
+    <div id="healthyAIHeader">
+      💬 Healthy AI
+      <span id="healthyAIClose">×</span>
+    </div>
+    <div id="healthyAIBody">
+      <div id="healthyAIChat"></div>
+      <div id="healthyAIInputArea">
+        <input type="text" id="healthyAIInput" placeholder="Nhập tin nhắn..." />
+        <button id="healthyAISend">Gửi</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="feelwell.js"></script>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+function initLoginPage(){
+// Simple client-side auth using localStorage
+// Users stored under key "feelwell_users" as an object: { username: { passwordHash, email, question, answerHash } }
+
+function qs(id){return document.getElementById(id)}
+
+// helpers: SHA-256 hashing (for demonstration, not secure server-side)
+async function hashText(text){
+  const enc = new TextEncoder();
+  const data = enc.encode(text);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  const arr = Array.from(new Uint8Array(hash));
+  return arr.map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function loadUsers(){ return JSON.parse(localStorage.getItem('feelwell_users')||'{}'); }
+function saveUsers(u){ localStorage.setItem('feelwell_users', JSON.stringify(u)); }
+
+// UI refs
+const showLogin = qs('showLogin'), showRegister = qs('showRegister');
+const loginForm = qs('loginForm'), registerForm = qs('registerForm'), forgotForm = qs('forgotForm');
+const loginUsername = qs('loginUsername'), loginPassword = qs('loginPassword'), loginBtn = qs('loginBtn'), loginMessage = qs('loginMessage');
+const regUsername = qs('regUsername'), regEmail = qs('regEmail'), regPassword = qs('regPassword'), regConfirm = qs('regConfirm'), regQuestion = qs('regQuestion'), regAnswer = qs('regAnswer'), registerBtn = qs('registerBtn'), regMessage = qs('regMessage');
+const regToLogin = qs('regToLogin');
+const forgotBtn = qs('forgotBtn'), fpUsername = qs('fpUsername'), fpNext = qs('fpNext'), fpCancel = qs('fpCancel'), fpQuestionArea = qs('fpQuestionArea'), fpQuestionLabel = qs('fpQuestionLabel'), fpAnswer = qs('fpAnswer'), fpMessage = qs('fpMessage');
+
+// Tab handlers
+showLogin.onclick = ()=>{ showLogin.classList.add('active'); showRegister.classList.remove('active'); loginForm.classList.remove('hidden'); registerForm.classList.add('hidden'); forgotForm.classList.add('hidden'); clearMessages(); }
+showRegister.onclick = ()=>{ showRegister.classList.add('active'); showLogin.classList.remove('active'); registerForm.classList.remove('hidden'); loginForm.classList.add('hidden'); forgotForm.classList.add('hidden'); clearMessages(); }
+regToLogin.onclick = ()=> showLogin.click();
+
+// Clear messages
+function clearMessages(){ loginMessage.textContent=''; regMessage.textContent=''; fpMessage.textContent=''; }
+
+// Registration
+registerBtn.onclick = async ()=>{
+  clearMessages();
+  const username = regUsername.value.trim();
+  const email = regEmail.value.trim();
+  const pwd = regPassword.value;
+  const confirm = regConfirm.value;
+  const q = regQuestion.value;
+  const ans = regAnswer.value.trim();
+
+  if(!username || !email || !pwd || !confirm || !q || !ans){
+    regMessage.textContent = 'Vui lòng điền đầy đủ tất cả trường.';
+    return;
+  }
+  if(pwd !== confirm){
+    regMessage.textContent = 'Mật khẩu và xác nhận không khớp.';
+    return;
+  }
+  // basic email format
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
+    regMessage.textContent = 'Email không hợp lệ.';
+    return;
+  }
+
+  const users = loadUsers();
+  if(users[username]){
+    regMessage.textContent = 'Tài khoản đã tồn tại. Vui lòng đăng nhập.';
+    return;
+  }
+
+  const pwdHash = await hashText(pwd);
+  const ansHash = await hashText(ans.toLowerCase());
+  users[username] = { passwordHash: pwdHash, email: email, question: q, answerHash: ansHash, created: Date.now() };
+  saveUsers(users);
+  regMessage.classList.add('success');
+  regMessage.textContent = 'Đăng ký thành công! Bạn có thể đăng nhập.';
+};
+
+// Login
+loginBtn.onclick = async ()=>{
+  clearMessages();
+  const username = loginUsername.value.trim();
+  const pwd = loginPassword.value;
+  if(!username || !pwd){ loginMessage.textContent = 'Vui lòng nhập tên đăng nhập và mật khẩu.'; return; }
+  const users = loadUsers();
+  if(!users[username]){ loginMessage.textContent = 'Tài khoản không tồn tại, vui lòng đăng ký.'; return; }
+  const pwdHash = await hashText(pwd);
+  if(pwdHash !== users[username].passwordHash){ loginMessage.textContent = 'Sai mật khẩu. Nếu quên, hãy dùng "Quên mật khẩu".'; return; }
+  // success
+  localStorage.setItem('loggedInUser', username);
+  // redirect to game
+  window.location.href = 'feelwell.html';
+};
+
+// Forgot password flow
+qs('forgotBtn').onclick = ()=>{ loginForm.classList.add('hidden'); registerForm.classList.add('hidden'); forgotForm.classList.remove('hidden'); clearMessages(); }
+fpCancel.onclick = ()=>{ showLogin.click(); }
+
+// Step: check username and show security question
+fpNext.onclick = async ()=>{
+  fpMessage.textContent = '';
+  const username = fpUsername.value.trim();
+  if(!username){ fpMessage.textContent = 'Vui lòng nhập tên đăng nhập.'; return; }
+  const users = loadUsers();
+  if(!users[username]){ fpMessage.textContent = 'Tài khoản không tồn tại. Vui lòng đăng ký.'; return; }
+  // show question
+  fpQuestionArea.classList.remove('hidden');
+  fpQuestionLabel.textContent = 'Câu hỏi: ' + (users[username].question === 'pet' ? 'Tên thú cưng đầu tiên?' : users[username].question === 'school' ? 'Tên trường tiểu học?' : 'Tên thành phố nơi bạn sinh?');
+  // change Next button to Verify / Reset
+  fpNext.textContent = 'Xác nhận';
+  // replace onclick to verify answer
+  fpNext.onclick = async ()=>{
+    const ans = fpAnswer.value.trim();
+    if(!ans){ fpMessage.textContent = 'Vui lòng nhập câu trả lời.'; return; }
+    const ansHash = await hashText(ans.toLowerCase());
+    if(ansHash !== users[username].answerHash){ fpMessage.textContent = 'Câu trả lời không đúng.'; return; }
+    // allow reset password
+    const newPwd = prompt('Nhập mật khẩu mới (ít nhất 6 ký tự):');
+    if(!newPwd || newPwd.length < 6){ alert('Mật khẩu không hợp lệ.'); return; }
+    const newHash = await hashText(newPwd);
+    users[username].passwordHash = newHash;
+    saveUsers(users);
+    alert('Đặt lại mật khẩu thành công. Vui lòng đăng nhập bằng mật khẩu mới.');
+    showLogin.click();
+    // reset fp form
+    fpUsername.value=''; fpAnswer.value=''; fpQuestionArea.classList.add('hidden'); fpNext.textContent='Tiếp theo';
+    fpNext.onclick = arguments.callee; // reset handler (not perfect but okay for prototype)
+  };
+};
+
+}
+
+
+function initFeelwellPage(){
+// Redirect to login if not authenticated
+
+
+// ----- Data -----
+const AVATARS = ["🐱", "🐶", "🦊", "🐼", "🐵", "🦁", "🐻", "🐸"];
+const COLORS = [
+  "#FFD6E0",
+  "#E6F7FF",
+  "#FFF4E6",
+  "#EAFDE6",
+  "#F0E6FF",
+  "#FFE6F0",
+  "#FFF1C9",
+  "#DFF7E1",
+];
+const EMOTIONS = [
+  // 🌞 Nhóm cảm xúc TÍCH CỰC
+  {
+    id: "happy",
+    label: "Vui vẻ",
+    emoji: "😄",
+    items: ["🌞", "🎈"],
+    tasks: [
+      { type: "timer", desc: "Nhảy/vận động nhẹ 30s", secs: 30, points: 10 },
+      {
+        type: "text",
+        desc: "Viết 3 điều khiến bạn vui",
+        placeholder: "Ghi 3 điều...",
+        points: 8,
+      },
+    ],
+  },
+  {
+    id: "excited",
+    label: "Hào hứng",
+    emoji: "🤩",
+    items: ["🎉", "🚀"],
+    tasks: [
+      {
+        type: "share",
+        desc: "Chia sẻ niềm vui với 1 người (gọi/nhắn)",
+        points: 8,
+      },
+      {
+        type: "creative",
+        desc: "Vẽ/ghi lại điều khiến bạn phấn khởi",
+        points: 10,
+      },
+    ],
+  },
+  {
+    id: "grateful",
+    label: "Biết ơn",
+    emoji: "🙏",
+    items: ["🌼", "💖"],
+    tasks: [
+      {
+        type: "text",
+        desc: "Viết 3 điều bạn biết ơn hôm nay",
+        placeholder: "Ghi 3 điều...",
+        points: 10,
+      },
+      { type: "action", desc: "Gửi lời cảm ơn tới 1 người bạn", points: 8 },
+    ],
+  },
+  {
+    id: "peaceful",
+    label: "Bình yên",
+    emoji: "🌿",
+    items: ["🕊", "☁️"],
+    tasks: [
+      {
+        type: "timer",
+        desc: "Ngồi thiền/hít thở sâu 2 phút",
+        secs: 120,
+        points: 10,
+      },
+      {
+        type: "audio",
+        desc: "Nghe tiếng thiên nhiên 1 phút",
+        secs: 60,
+        points: 6,
+      },
+    ],
+  },
+
+  // 🌧 Nhóm cảm xúc TIÊU CỰC
+  {
+    id: "sad",
+    label: "Buồn",
+    emoji: "😢",
+    items: ["🌸", "☔"],
+    tasks: [
+      {
+        type: "timer",
+        desc: "Tưới hoa + thở: hít 4s, giữ 4s, thở 6s (40s)",
+        secs: 40,
+        points: 12,
+      },
+      {
+        type: "audio",
+        desc: "Nghe 60s bài yêu thích (tự chuẩn bị)",
+        secs: 60,
+        points: 8,
+      },
+    ],
+  },
+  {
+    id: "angry",
+    label: "Giận",
+    emoji: "😡",
+    items: ["🔥", "🥊"],
+    tasks: [
+      {
+        type: "active",
+        desc: "Tập thể dục mạnh 1 phút (nhảy dây/nhảy tại chỗ)",
+        secs: 60,
+        points: 14,
+      },
+      {
+        type: "text",
+        desc: "Viết ra lý do và giải pháp, sau đó gấp/huỷ bỏ giấy",
+        placeholder: "Viết ra...",
+        points: 10,
+      },
+    ],
+  },
+  {
+    id: "anxious",
+    label: "Lo lắng",
+    emoji: "😰",
+    items: ["📝", "🧘‍♀️"],
+    tasks: [
+      {
+        type: "text",
+        desc: "Viết 3 điều biết ơn",
+        placeholder: "Ghi 3 điều...",
+        points: 10,
+      },
+      { type: "timer", desc: "Hít thở chậm 30s", secs: 30, points: 6 },
+    ],
+  },
+  {
+    id: "lonely",
+    label: "Cô đơn",
+    emoji: "🥺",
+    items: ["🤝", "💌"],
+    tasks: [
+      { type: "call", desc: "Gọi/nhắn 1 người bạn", points: 10 },
+      {
+        type: "text",
+        desc: "Viết thư cho chính mình",
+        placeholder: "Gửi lời động viên...",
+        points: 8,
+      },
+    ],
+  },
+
+  // 🌤 Nhóm cảm xúc TRUNG TÍNH
+  {
+    id: "tired",
+    label: "Mệt",
+    emoji: "😴",
+    items: ["💧", "🛌"],
+    tasks: [
+      { type: "timer", desc: "Nhắm mắt nghỉ 90s", secs: 90, points: 9 },
+      { type: "action", desc: "Uống 1 cốc nước", points: 5 },
+    ],
+  },
+  {
+    id: "bored",
+    label: "Chán",
+    emoji: "🥱",
+    items: ["📚", "🎲"],
+    tasks: [
+      {
+        type: "creative",
+        desc: "Thử một hoạt động mới trong 5 phút",
+        points: 8,
+      },
+      {
+        type: "text",
+        desc: "Viết 3 điều bạn có thể làm hôm nay",
+        placeholder: "Ghi ý tưởng...",
+        points: 7,
+      },
+    ],
+  },
+  {
+    id: "confused",
+    label: "Bối rối",
+    emoji: "😕",
+    items: ["🧩", "🔍"],
+    tasks: [
+      {
+        type: "text",
+        desc: "Viết ra 2 lựa chọn và ưu/nhược điểm",
+        placeholder: "Ghi lựa chọn...",
+        points: 9,
+      },
+      {
+        type: "timer",
+        desc: "Tạm dừng và thư giãn 1 phút",
+        secs: 60,
+        points: 5,
+      },
+    ],
+  },
+  {
+    id: "thoughtful",
+    label: "Suy tư",
+    emoji: "🤔",
+    items: ["📓", "🖋"],
+    tasks: [
+      {
+        type: "text",
+        desc: "Ghi lại suy nghĩ/ý tưởng hiện tại",
+        placeholder: "Nhập ý tưởng...",
+        points: 9,
+      },
+      { type: "share", desc: "Chia sẻ ý tưởng với 1 người bạn", points: 8 },
+    ],
+  },
+];
+
+// ----- State -----
+let state = {
+  avatarIndex: 0,
+  color: COLORS[0],
+  name: "",
+  emotion: null,
+  history: [],
+  score: 0,
+};
+
+// Load / Save
+function loadState() {
+  const s = localStorage.getItem("feelwell_full_v1");
+  if (s) state = Object.assign(state, JSON.parse(s));
+}
+function saveState() {
+  localStorage.setItem("feelwell_full_v1", JSON.stringify(state));
+  renderAll();
+}
+
+// UI refs
+const avatarList = document.getElementById("avatarList");
+const colorRow = document.getElementById("colorRow");
+const emotionsWrap = document.getElementById("emotions");
+const characterDisplay = document.getElementById("characterDisplay");
+const itemDisplay = document.getElementById("itemDisplay");
+const taskArea = document.getElementById("taskArea");
+const controls = document.getElementById("controls");
+const feedback = document.getElementById("feedback");
+const historyList = document.getElementById("historyList");
+const scoreDisplay = document.getElementById("scoreDisplay");
+const levelBadge = document.getElementById("levelBadge");
+const statCounts = document.getElementById("statCounts");
+
+// Renderers
+function renderAvatars() {
+  avatarList.innerHTML = "";
+  AVATARS.forEach((a, i) => {
+    const d = document.createElement("div");
+    d.className = "avatar" + (state.avatarIndex === i ? " selected" : "");
+    d.innerText = a;
+    d.onclick = () => {
+      state.avatarIndex = i;
+      state.customImage = null;
+      saveState();
+    };
+    avatarList.appendChild(d);
+  });
+}
+function renderColors() {
+  colorRow.innerHTML = "";
+  COLORS.forEach((c) => {
+    const s = document.createElement("div");
+    s.className = "color-swatch" + (state.color === c ? " selected" : "");
+    s.style.background = c;
+    s.onclick = () => {
+      state.color = c;
+      saveState();
+    };
+    colorRow.appendChild(s);
+  });
+}
+function renderEmotions() {
+  emotionsWrap.innerHTML = "";
+  EMOTIONS.forEach((e) => {
+    const b = document.createElement("div");
+    b.className = "emotion" + (state.emotion === e.id ? " selected" : "");
+    b.innerHTML = `<div style="font-size:20px">${e.emoji}</div><div><strong>${e.label}</strong><div class="small">${e.tasks[0].desc}</div></div>`;
+    b.onclick = () => {
+      selectEmotion(e.id);
+    };
+    emotionsWrap.appendChild(b);
+  });
+}
+function renderCharacter() {
+  if (state.customImage) {
+    characterDisplay.style.backgroundImage = `url(${state.customImage})`;
+    characterDisplay.style.backgroundSize = "cover";
+    characterDisplay.innerText = "";
+  } else {
+    characterDisplay.style.backgroundImage = "";
+    characterDisplay.innerText = AVATARS[state.avatarIndex];
+  }
+  characterDisplay.style.backgroundColor = state.color;
+}
+function renderStage() {
+  if (!state.emotion) {
+    itemDisplay.innerHTML = "";
+    taskArea.innerHTML = '<div class="small">Chọn cảm xúc để bắt đầu</div>';
+    controls.innerHTML = "";
+    feedback.style.display = "none";
+    return;
+  }
+  const e = EMOTIONS.find((x) => x.id === state.emotion);
+  itemDisplay.innerText = e.items[Math.floor(Math.random() * e.items.length)];
+  const task = e.tasks[Math.floor(Math.random() * e.tasks.length)];
+  taskArea.innerHTML = `<div><strong>Nhiệm vụ:</strong> ${task.desc}</div>`;
+  renderControlsFor(task);
+}
+function renderHistory() {
+  historyList.innerHTML = "";
+  if (state.history.length === 0) {
+    historyList.innerHTML =
+      '<div class="small">Chưa có lịch sử hoàn thành.</div>';
+    return;
+  }
+  state.history
+    .slice()
+    .reverse()
+    .forEach((h) => {
+      const d = document.createElement("div");
+      d.style.padding = "8px";
+      d.innerHTML = `<div><strong>${h.emotionLabel}</strong> — ${new Date(
+        h.ts
+      ).toLocaleString()}</div><div class="small">${h.taskDesc} — ${
+        h.completed ? "Hoàn thành" : "Bỏ lỡ"
+      } (+${h.points}đ)</div>`;
+      historyList.appendChild(d);
+    });
+}
+function renderStats() {
+  const counts = {};
+  EMOTIONS.forEach((e) => (counts[e.id] = 0));
+  state.history.forEach((h) => {
+    if (h.completed) counts[h.emotion] = (counts[h.emotion] || 0) + 1;
+  });
+  statCounts.innerHTML = "";
+  EMOTIONS.forEach((e) => {
+    const div = document.createElement("div");
+    div.innerHTML = `<strong>${e.label}:</strong> ${counts[e.id] || 0}`;
+    statCounts.appendChild(div);
+  });
+  renderChart(counts);
+}
+function renderScoreAndLevel() {
+  scoreDisplay.innerText = state.score;
+  const lv =
+    state.score >= 200
+      ? "Master"
+      : state.score >= 100
+      ? "Advanced"
+      : state.score >= 40
+      ? "Intermediate"
+      : "Novice";
+  levelBadge.innerText = lv;
+}
+
+// Task controls
+let countdownInterval = null;
+let remaining = 0;
+function renderControlsFor(task) {
+  controls.innerHTML = "";
+  feedback.style.display = "none";
+  if (
+    task.type === "timer" ||
+    task.type === "audio" ||
+    task.type === "active"
+  ) {
+    remaining = task.secs || 30;
+    controls.innerHTML = `<div class="small">Thời gian: <span id="timerDisplay">${formatTime(
+      remaining
+    )}</span></div><div class="actions"><button class="btn-primary" id="startBtn">Bắt đầu</button><button class="btn-ghost" id="completeBtn" disabled>Xác nhận</button></div>`;
+    document.getElementById("startBtn").onclick = () => startCountdown(task);
+    document.getElementById("completeBtn").onclick = () => completeTask(task);
+  } else if (
+    task.type === "text" ||
+    task.type === "creative" ||
+    task.type === "action" ||
+    task.type === "share" ||
+    task.type === "call"
+  ) {
+    controls.innerHTML = `<textarea id="taskText" class="task-input" placeholder="${
+      task.placeholder || "Ghi ở đây..."
+    }"></textarea><div class="actions"><button class="btn-primary" id="submitBtn">Hoàn thành</button></div>`;
+    document.getElementById("submitBtn").onclick = () => completeTask(task);
+  } else {
+    controls.innerHTML = `<div class="small">Nhấp Hoàn thành khi bạn đã làm nhiệm vụ.</div><div class="actions"><button class="btn-primary" id="quickComplete">Hoàn thành</button></div>`;
+    document.getElementById("quickComplete").onclick = () => completeTask(task);
+  }
+  resetInactivityReminder();
+}
+
+function formatTime(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+function startCountdown(task) {
+  const startBtn = document.getElementById("startBtn");
+  const completeBtn = document.getElementById("completeBtn");
+  startBtn.disabled = true;
+  completeBtn.disabled = true;
+  countdownInterval && clearInterval(countdownInterval);
+  countdownInterval = setInterval(() => {
+    remaining--;
+    document.getElementById("timerDisplay").innerText = formatTime(remaining);
+    if (remaining <= 0) {
+      clearInterval(countdownInterval);
+      completeBtn.disabled = false;
+      startBtn.disabled = false;
+    }
+  }, 1000);
+}
+function completeTask(task) {
+  const ts = Date.now();
+  const completed = true;
+  const points = task.points || 5;
+  const emotion = state.emotion;
+  const emotionLabel = EMOTIONS.find((e) => e.id === emotion).label;
+  const desc = task.desc;
+  state.history.push({
+    ts,
+    emotion,
+    emotionLabel,
+    taskDesc: desc,
+    completed,
+    points,
+  });
+  state.score += points;
+  saveState();
+  feedback.style.display = "block";
+  feedback.innerHTML = `<strong>Hoàn thành!</strong><div class="small">+${points} điểm — ${task.desc}</div>`;
+  characterDisplay.style.transform = "scale(1.06) rotate(-4deg)";
+  itemDisplay.style.transform = "translateY(-6px) scale(1.08)";
+  setTimeout(() => {
+    characterDisplay.style.transform = "";
+    itemDisplay.style.transform = "";
+  }, 900);
+  renderHistory();
+  renderStats();
+  renderScoreAndLevel();
+  countdownInterval && clearInterval(countdownInterval);
+}
+
+// Emotion selection & inactivity
+let reminderTimeout = null;
+function selectEmotion(id) {
+  state.emotion = id;
+  saveState();
+  renderStage();
+}
+function resetInactivityReminder() {
+  clearTimeout(reminderTimeout);
+  document.getElementById("feedback").style.display = "none";
+  reminderTimeout = setTimeout(() => {
+    document.getElementById("feedback").style.display = "block";
+    document.getElementById("feedback").innerText = getComfortMessage();
+  }, 30000);
+}
+function getComfortMessage() {
+  const generalMsgs = [
+    "Mình vẫn ở đây nếu bạn cần nhé 🌸",
+    "Không sao nếu chưa làm, bắt đầu khi bạn sẵn sàng 💛",
+    "Bạn đã làm tốt khi nhận biết cảm xúc của mình ❤️",
+    "Cảm xúc của bạn luôn có giá trị 🌿",
+    "Hãy cho bản thân một chút không gian để thở 💨",
+    "Nhỏ bé nhưng mạnh mẽ, giống như bạn 💎",
+    "Bạn xứng đáng được yêu thương 💖",
+    "Mỗi ngày là một cơ hội mới để bắt đầu 🌅",
+    "Hãy lắng nghe cơ thể và trái tim mình 🫀",
+    "Không ai hoàn hảo, và điều đó thật tuyệt 💫",
+  ];
+
+  const emotionMsgs = {
+    happy: [
+      "Nghe có vẻ hôm nay bạn rất vui! 🎉 Điều gì đã khiến bạn cười nhiều thế?",
+      "Hãy thử chia sẻ niềm vui này với ai đó nhé, họ sẽ hạnh phúc lây 💛",
+      "Giữ lại khoảnh khắc này bằng một bức ảnh hoặc một ghi chú ✨",
+      "Kể mình nghe, chuyện gì đã làm bạn mỉm cười từ sáng tới giờ?",
+      "Bạn có thể biến niềm vui này thành động lực làm điều gì đó mới mẻ!",
+      "Âm nhạc và niềm vui luôn đi cùng nhau, bật ngay bài bạn thích nhất nào 🎶",
+      "Hãy nhớ cảm giác này thật kỹ, nó là nguồn sức mạnh của bạn",
+      "Niềm vui của bạn có thể lan tỏa, hãy thử chúc ai đó một ngày tốt lành",
+      "Một chút nhảy nhót sẽ làm niềm vui thêm trọn vẹn 🕺",
+      "Bạn đã tự thưởng cho mình gì chưa?",
+      "Đây là lúc hoàn hảo để lên kế hoạch cho một điều thú vị",
+      "Viết một lá thư cho chính mình trong tương lai khi bạn cần nhớ lại khoảnh khắc này",
+      "Chia sẻ câu chuyện vui này lên mạng xã hội để lan tỏa năng lượng tích cực",
+      "Làm một điều tử tế cho người khác hôm nay nhé",
+      "Niềm vui của bạn hôm nay sẽ là kỷ niệm đẹp sau này",
+      "Đừng quên nói lời cảm ơn với ai đã khiến bạn vui",
+      "Mỉm cười thật tươi, ngay cả khi chỉ một mình 🌼",
+      "Hãy tạo một playlist 'Ngày Vui' ngay bây giờ",
+      "Bạn đang làm rất tốt trong việc nuôi dưỡng niềm vui",
+    ],
+    sad: [
+      "Bạn có muốn kể cho mình nghe điều gì đang khiến bạn buồn không? 💌",
+      "Hãy thử viết ra 3 điều khiến bạn biết ơn hôm nay nhé 🌱",
+      "Một bản nhạc nhẹ có thể giúp tâm trạng bạn dễ chịu hơn 🎶",
+      "Khóc cũng là một cách để giải tỏa, đừng kìm nén nếu bạn cần",
+      "Ra ngoài hít thở không khí trong lành sẽ giúp bạn nhẹ lòng",
+      "Bạn không cần phải mạnh mẽ mọi lúc, cho phép bản thân yếu đuối cũng ổn",
+      "Hãy ôm một chiếc gối mềm hoặc thú nhồi bông để cảm thấy an toàn",
+      "Gọi cho một người bạn mà bạn tin tưởng",
+      "Đọc một vài trang sách yêu thích có thể giúp bạn tạm quên đi",
+      "Tự nấu một món ăn ấm áp và thưởng thức",
+      "Nhớ rằng mọi cảm xúc đều tạm thời, kể cả nỗi buồn này",
+      "Hãy viết nhật ký về cảm giác của bạn ngay lúc này",
+      "Nghe tiếng mưa hoặc âm thanh thiên nhiên để xoa dịu tâm trạng",
+      "Hình dung về một nơi khiến bạn thấy yên bình",
+      "Uống một cốc nước ấm và thở sâu",
+      "Thử thiền 5 phút để đầu óc bớt rối",
+      "Nhìn lại những thành tựu bạn đã đạt được",
+      "Bạn đã vượt qua nhiều chuyện khó khăn trước đây, lần này cũng vậy",
+      "Gửi một tin nhắn đơn giản: 'Mình cần ai đó lắng nghe'",
+    ],
+    angry: [
+      "Hít sâu 3 lần… thở ra thật chậm. Bạn cảm thấy thế nào rồi? 🌿",
+      "Viết ra lý do khiến bạn giận, sau đó vo tròn tờ giấy và bỏ đi ✏️",
+      "Hoạt động thể chất mạnh có thể giúp bạn xả năng lượng tiêu cực 💪",
+      "Đi bộ nhanh hoặc chạy tại chỗ 1 phút",
+      "Bóp một quả bóng stress để giải tỏa",
+      "Nghe một bài hát sôi động để chuyển hướng năng lượng",
+      "Tự hỏi: điều này có còn quan trọng sau 1 năm nữa không?",
+      "Dừng lại 5 giây trước khi nói hoặc hành động",
+      "Rửa mặt bằng nước mát để bình tĩnh hơn",
+      "Tránh đưa ra quyết định khi đang tức giận",
+      "Viết thư cho người khiến bạn tức (không cần gửi)",
+      "Ngồi xuống và tập trung vào hơi thở",
+      "Đếm ngược từ 50 thật chậm",
+      "Nói ra cảm xúc thay vì giữ trong lòng",
+      "Tránh caffeine hoặc đường khi đang giận",
+      "Thay đổi môi trường xung quanh, bước sang phòng khác",
+      "Vẽ nguệch ngoạc để xả bớt cảm xúc",
+      "Tìm điều gì đó khiến bạn bật cười",
+      "Nhớ rằng bạn có quyền chọn cách phản ứng",
+    ],
+    anxious: [
+      "Thử nhắm mắt và hít vào 4s, giữ 4s, thở ra 6s nhé 🫁",
+      "Viết ra điều đang khiến bạn lo lắng để dễ sắp xếp lại suy nghĩ 📄",
+      "Nhớ rằng cảm giác này sẽ không kéo dài mãi, bạn sẽ ổn thôi 🌈",
+      "Giới hạn thời gian nghĩ về vấn đề — ví dụ 10 phút",
+      "Tập trung vào một vật trước mặt và miêu tả nó",
+      "Nghe âm thanh thiên nhiên hoặc nhạc nhẹ",
+      "Tránh đọc tin tiêu cực trong lúc lo lắng",
+      "Tắm nước ấm để thư giãn",
+      "Nhắc bản thân: 'Mình đã vượt qua nhiều lần trước đây'",
+      "Hỏi: điều tệ nhất có thể xảy ra là gì? Và mình sẽ làm gì nếu nó xảy ra?",
+      "Hít thở sâu và tưởng tượng nơi an toàn",
+      "Tập thả lỏng từng nhóm cơ trên cơ thể",
+      "Đi dạo 5 phút ngoài trời",
+      "Hạn chế caffeine",
+      "Tập trung vào việc mình có thể kiểm soát",
+      "Viết ra 3 điều tốt đang tồn tại",
+      "Chia sẻ với một người bạn đáng tin",
+      "Làm một việc nhỏ để lấy lại cảm giác kiểm soát",
+      "Uống một ngụm nước chậm rãi và tập trung vào cảm giác",
+    ],
+    tired: [
+      "Hãy cho cơ thể nghỉ một chút, chỉ cần 2 phút nhắm mắt thôi cũng được 😴",
+      "Uống một cốc nước mát để tỉnh táo hơn nhé 💧",
+      "Nếu có thể, hãy đứng dậy và vươn vai thật dài ✨",
+      "Nghe một bài nhạc nhẹ để thư giãn",
+      "Nhắm mắt và tưởng tượng mình đang ở nơi yên tĩnh",
+      "Ăn nhẹ một thứ lành mạnh",
+      "Tắt màn hình điện thoại 5 phút",
+      "Ngồi thẳng lưng và hít sâu",
+      "Ra ngoài hít thở không khí",
+      "Giảm ánh sáng xung quanh",
+      "Ngủ trưa 15 phút",
+      "Massage nhẹ vai và cổ",
+      "Tắm nhanh để làm mới cơ thể",
+      "Đi bộ chậm",
+      "Tránh đồ uống có cồn",
+      "Viết ra 3 điều khiến bạn mệt và tìm giải pháp đơn giản",
+      "Lắng nghe nhịp tim của mình",
+      "Đặt báo thức nghỉ giải lao",
+      "Thử yoga hoặc thiền ngắn",
+    ],
+    excited: [
+      "Wow! Điều gì đã khiến bạn hào hứng vậy? 🚀",
+      "Hãy ghi lại ý tưởng hoặc cảm xúc này, biết đâu nó sẽ rất quý giá sau này 📔",
+      "Chia sẻ niềm hứng khởi với bạn bè hoặc đồng nghiệp nhé 🌟",
+      "Dùng năng lượng này để hoàn thành một mục tiêu",
+      "Tạo một playlist nhạc cho tâm trạng này",
+      "Lên kế hoạch cho dự án bạn mơ ước",
+      "Chụp ảnh khoảnh khắc hiện tại",
+      "Gửi tin nhắn tích cực cho ai đó",
+      "Vẽ hoặc sáng tạo gì đó ngay",
+      "Thử một hoạt động mới",
+      "Lập danh sách 5 điều bạn muốn làm",
+      "Nghĩ về cách lan tỏa năng lượng này",
+      "Viết blog hoặc status chia sẻ",
+      "Mua một món quà nhỏ cho bản thân",
+      "Tập thể dục để nhân đôi năng lượng",
+      "Chơi một trò chơi yêu thích",
+      "Nấu món ăn bạn thích",
+      "Nghe podcast truyền cảm hứng",
+      "Ghi âm cảm xúc của bạn",
+    ],
+    lonely: [
+      "Bạn đã thử nhắn tin cho một người bạn cũ chưa? 📱",
+      "Hãy ra ngoài đi dạo, đôi khi chỉ cần thay đổi môi trường là tâm trạng sẽ khá hơn 🌳",
+      "Nhớ rằng bạn không thực sự một mình 💖",
+      "Tham gia một nhóm cộng đồng trực tuyến",
+      "Gọi video cho người thân",
+      "Đọc sách hoặc xem phim để bầu bạn với nhân vật",
+      "Nuôi một cây cảnh nhỏ",
+      "Viết thư tay cho một ai đó",
+      "Đăng ký lớp học mới",
+      "Thử nấu ăn hoặc làm bánh",
+      "Tình nguyện ở nơi gần bạn",
+      "Nghe podcast trò chuyện",
+      "Tham gia diễn đàn sở thích",
+      "Mở nhạc và hát theo",
+      "Gặp gỡ ai đó tại quán cà phê",
+      "Đi bảo tàng hoặc công viên",
+      "Viết nhật ký về cảm xúc cô đơn",
+      "Chơi với thú cưng",
+      "Lập kế hoạch cho cuối tuần",
+    ],
+  };
+
+  if (state.emotion && emotionMsgs[state.emotion]) {
+    const list = emotionMsgs[state.emotion];
+    return list[Math.floor(Math.random() * list.length)];
+  }
+
+  return generalMsgs[Math.floor(Math.random() * generalMsgs.length)];
+}
+
+// CSV export
+function exportCSV() {
+  if (state.history.length === 0) {
+    alert("Chưa có dữ liệu để xuất.");
+    return;
+  }
+  const header = [
+    "timestamp",
+    "emotion",
+    "emotionLabel",
+    "taskDesc",
+    "completed",
+    "points",
+  ];
+  const rows = state.history.map((h) =>
+    [
+      new Date(h.ts).toISOString(),
+      h.emotion,
+      h.emotionLabel,
+      `"${h.taskDesc.replace(/"/g, '""')}"`,
+      h.completed,
+      h.points,
+    ].join(",")
+  );
+  const csv = [header.join(","), ...rows].join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "feelwell_history.csv";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+// Helpers UI
+document.getElementById("exportCsv").onclick = exportCSV;
+document.getElementById("clearHistory").onclick = () => {
+  if (confirm("Xóa toàn bộ lịch sử?")) {
+    state.history = [];
+    saveState();
+  }
+};
+document.getElementById("saveBtn").onclick = () => {
+  state.name = document.getElementById("charName").value || "";
+  saveState();
+  alert("Đã lưu cấu hình.");
+};
+document.getElementById("resetBtn").onclick = () => {
+  if (confirm("Đặt lại toàn bộ?")) {
+    localStorage.removeItem("feelwell_full_v1");
+    location.reload();
+  }
+};
+document.getElementById("uploadLabel").onclick = () =>
+  document.getElementById("imgUpload").click();
+document.getElementById("imgUpload").addEventListener("change", (ev) => {
+  const f = ev.target.files[0];
+  if (!f) return;
+  const rd = new FileReader();
+  rd.onload = (e) => {
+    state.customImage = e.target.result;
+    saveState();
+  };
+  rd.readAsDataURL(f);
+});
+
+// Chart
+let chartInstance = null;
+function renderChart(counts) {
+  const ctx = document.getElementById("emotionChart").getContext("2d");
+  const labels = EMOTIONS.map((e) => e.label);
+  const data = EMOTIONS.map((e) => counts[e.id] || 0);
+  if (chartInstance) chartInstance.destroy();
+  chartInstance = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Số lần hoàn thành",
+          data,
+          backgroundColor: EMOTIONS.map(
+            (_, i) =>
+              [
+                "#60a5fa",
+                "#fca5a5",
+                "#fbbf24",
+                "#34d399",
+                "#f472b6",
+                "#c084fc",
+                "#93c5fd",
+              ][i % 7]
+          ),
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, precision: 0 } },
+    },
+  });
+}
+
+// Render all
+function renderAll() {
+  renderAvatars();
+  renderColors();
+  renderEmotions();
+  renderCharacter();
+  renderStage();
+  renderHistory();
+  renderStats();
+  renderScoreAndLevel();
+}
+
+// Boot
+loadState();
+renderAll();
+resetInactivityReminder();
+// ---- Healthy AI Chatbox ----
+const aiHeader = document.getElementById("healthyAIHeader");
+const aiBody = document.getElementById("healthyAIBody");
+const aiChat = document.getElementById("healthyAIChat");
+const aiInput = document.getElementById("healthyAIInput");
+const aiSend = document.getElementById("healthyAISend");
+
+let aiHistory = JSON.parse(localStorage.getItem("healthy_ai_history") || "[]");
+
+// Render history
+function renderAIHistory() {
+  aiChat.innerHTML = "";
+  aiHistory.forEach((msg) => {
+    const div = document.createElement("div");
+    div.className = `healthyAIMessage ${msg.sender}`;
+    div.textContent = msg.text;
+    aiChat.appendChild(div);
+  });
+  aiChat.scrollTop = aiChat.scrollHeight;
+}
+
+// Toggle chat
+aiHeader.addEventListener("click", () => {
+  aiBody.style.display = aiBody.style.display === "flex" ? "none" : "flex";
+});
+
+// Send message
+function sendAIMessage() {
+  const text = aiInput.value.trim();
+  if (!text) return;
+
+  // Add user message
+  aiHistory.push({ sender: "user", text });
+  aiInput.value = "";
+  renderAIHistory();
+  saveAIHistory();
+
+  // Fake AI response (Bạn có thể kết nối API AI thật ở đây)
+  setTimeout(() => {
+    const reply = getAIReply(text);
+    aiHistory.push({ sender: "ai", text: reply });
+    renderAIHistory();
+    saveAIHistory();
+  }, 700);
+}
+
+function getAIReply(userText) {
+  // Simple AI reply logic (thay bằng API call nếu muốn)
+  if (userText.includes("buồn"))
+    return "Mình hiểu, hãy thử hít thở sâu và nghĩ đến điều khiến bạn hạnh phúc nhé 🌸";
+  if (userText.includes("mệt")) return "Bạn nên nghỉ ngơi và uống nước nhé 💧";
+  return "Mình ở đây để lắng nghe bạn ❤️";
+}
+
+function saveAIHistory() {
+  localStorage.setItem("healthy_ai_history", JSON.stringify(aiHistory));
+}
+
+aiSend.addEventListener("click", sendAIMessage);
+aiInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") sendAIMessage();
+});
+
+// Khởi động
+renderAIHistory();
+
+}
+
+
+// Page toggle logic
+(function(){
+    if (localStorage.getItem("loggedInUser")) {
+        document.getElementById("feelwellPage").style.display = "block";
+        initFeelwellPage();
+    } else {
+        document.getElementById("loginPage").style.display = "block";
+        initLoginPage();
+        // Patch login success to switch view
+        const origLoginBtn = document.getElementById("loginBtn");
+        if(origLoginBtn) {
+            origLoginBtn.onclick = async function(){
+                const username = document.getElementById('loginUsername').value.trim();
+                const pwd = document.getElementById('loginPassword').value;
+                const users = JSON.parse(localStorage.getItem('feelwell_users')||'{}');
+                if(!users[username]){ document.getElementById('loginMessage').textContent = 'Tài khoản không tồn tại.'; return; }
+                const enc = new TextEncoder();
+                const data = enc.encode(pwd);
+                const hashBuf = await crypto.subtle.digest('SHA-256', data);
+                const arr = Array.from(new Uint8Array(hashBuf));
+                const pwdHash = arr.map(b=>b.toString(16).padStart(2,'0')).join('');
+                if(pwdHash !== users[username].passwordHash){ document.getElementById('loginMessage').textContent = 'Sai mật khẩu.'; return; }
+                localStorage.setItem('loggedInUser', username);
+                document.getElementById("loginPage").style.display = "none";
+                document.getElementById("feelwellPage").style.display = "block";
+                initFeelwellPage();
+            }
+        }
+    }
+})();
+</script>
+</body>
+</html>
